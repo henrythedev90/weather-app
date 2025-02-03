@@ -69,21 +69,16 @@ export default function Weather({
   };
 
   return (
-    <div
-      className="p-4 m-4 mr-4 ml-4 max-w-lg mx-auto border-2 border-accent rounded-lg"
-      style={{ border: "1px solid var(--accent)" }}
-    >
+    <div>
       <div>
-        <h1 className="text-2xl font-bold mb-4 text-primary-color">
-          Weather App
-        </h1>
+        <h1>Weather App</h1>
         <LightModeButton theme={theme} toggleTheme={toggleTheme} />
       </div>
-      {error && <p className="text-secondary-color">{error}</p>}
+      {error && <p>{error}</p>}
 
       {weather && (
-        <div className="mt-4 p-4 bg-gray-200 rounded">
-          <h2 className="text-xl font-semibold">{weather.name}</h2>
+        <div>
+          <h2>{weather.name}</h2>
           <div>
             <p>Condition: {weather.weather[0].description}</p>
             <p>
@@ -93,10 +88,7 @@ export default function Weather({
                 : convertCelsiusToFahrenheit(weather.main.temp)}
               °{isCelsius ? "C" : "F"}
             </p>
-            <button
-              className="ml-2 bg-primary-color text-white py-1 px-2 rounded"
-              onClick={() => setIsCelsius(!isCelsius)}
-            >
+            <button onClick={() => setIsCelsius(!isCelsius)}>
               Switch to {isCelsius ? "Fahrenheit" : "Celsius"}
             </button>
             <Image
