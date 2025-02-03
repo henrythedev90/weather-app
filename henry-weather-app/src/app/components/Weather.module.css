@@ -1,0 +1,131 @@
+.weatherContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid black;
+  margin: 2rem;
+  padding: 1rem;
+  background-color: var(--bg-color);
+  width: 90%;
+  max-width: 1200px; /* Ensures it doesn’t stretch too much on large screens */
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  border: 1px solid var(--accent);
+  padding: 2rem;
+  flex-wrap: wrap;
+}
+
+.weatherInfo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap; /* Ensures items wrap on smaller screens */
+}
+
+.weatherInfo > :first-child {
+  flex: 1 1 30%; /* Adjusts width while keeping proportions */
+  padding: 1rem;
+  min-width: 200px;
+}
+
+.weatherInfo > :nth-child(2) {
+  flex: 1 1 70%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.todaysWeatherInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--accent);
+  padding: 2rem;
+  width: 100%;
+  max-width: 600px;
+}
+
+.todaysWeatherInfo h2 {
+  border-bottom: 4px solid var(--accent);
+  font-weight: 700;
+  padding: 0.5rem;
+}
+
+.todaysWeatherInfo div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 1rem;
+}
+
+.todaysWeatherInfo div p {
+  padding: 0.5rem;
+}
+
+.forecastList {
+  display: flex;
+  flex-wrap: wrap; /* Allows wrapping for smaller screens */
+  justify-content: center;
+  border: 1px solid var(--accent);
+  padding: 2rem;
+  width: 100%;
+  gap: 1rem;
+}
+
+.forecastItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--accent);
+  padding: 1rem;
+  width: 100%;
+  max-width: 150px;
+  min-width: 120px;
+  min-height: 250px;
+  flex: 1 1 calc(33.333% - 1rem); /* Ensures 3 items per row by default */
+}
+
+/* Ensures single-column layout on very small screens */
+@media (max-width: 768px) {
+  .weatherInfo {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .forecastList {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .forecastItem {
+    flex: 1 1 calc(50% - 1rem); /* Switch to 2 columns */
+  }
+}
+
+/* Further adjustments for mobile */
+@media (max-width: 480px) {
+  .header {
+    flex-direction: column;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .forecastItem {
+    flex: 1 1 100%; /* Makes each item take full width */
+    max-width: 200px;
+  }
+}

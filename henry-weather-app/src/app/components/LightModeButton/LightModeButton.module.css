@@ -1,0 +1,21 @@
+.light_mode_button {
+  background-color: green;
+  color: var(--color);
+  border: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  height: 40px;
+  width: 100px;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0);
+}
+
+.light_mode_button:focus {
+  outline: none; /* Not ideal for accessibility */
+}
+
+.light_mode_button[data-theme="dark"] span:nth-child(2) {
+  transform: translateX(
+    30px
+  ); /* Adjusted to ensure the button moves within the visible area */
+}
