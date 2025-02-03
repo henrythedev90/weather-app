@@ -60,9 +60,7 @@ export default function Weather() {
 
       setWeather(weatherData);
       setForecast(forecastData);
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 5000);
+      setIsLoading(false);
     } catch {
       setError("Failed to fetch weather data.");
       setIsLoading(false);
