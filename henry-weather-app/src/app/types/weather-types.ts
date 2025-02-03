@@ -28,9 +28,35 @@ export interface WeatherData {
 }
 
 export interface ForecastData {
-  list: {
-    dt_txt: string;
-    main: { temp: number };
-    weather: { description: string; icon: string }[];
-  }[];
+  cod: string;
+  city: {
+    id: number;
+    name: string;
+    coord: { lat: number; lon: number };
+    country: string;
+    population: number;
+    timezone: number;
+    sunrise: number;
+    sunset: number;
+  };
+  list: Forecast[];
+}
+
+export interface Forecast {
+  dt_txt: string;
+  dt: number;
+  clouds: { all: number };
+  main: {
+    temp: number;
+    feels_like: number;
+    temp_min: number;
+    temp_max: number;
+    grnd_level: number;
+    humidity: number;
+    pressure: number;
+    sea_level: number;
+    temp_kf: number;
+  };
+  weather: { description: string; icon: string; main: string; id: number }[];
+  wind: { speed: number; deg: number };
 }

@@ -9,16 +9,19 @@ export default function LightModeButton({
   theme: string;
 }) {
   return (
-    <button
-      onClick={toggleTheme}
-      className={classes.light_mode_button}
-      style={{
-        backgroundColor: theme === "light" ? "#333" : "white",
-        color: theme === "light" ? "white" : "#333",
-        border: theme === "light" ? "4px solid green" : "4px solid pink",
-      }}
-    >
-      <span>{theme === "light" ? "Light" : "Dark"}</span>
-    </button>
+    <div>
+      <button
+        onClick={toggleTheme}
+        className={`px-4 py-2 font-semibold rounded-lg transition 
+        ${
+          theme === "light"
+            ? "bg-gray-900 text-white border-4 border-green-500"
+            : "bg-white text-gray-900 border-4 border-pink-500"
+        }
+        hover:scale-105 shadow-md`}
+      >
+        <span>{theme === "light" ? "Light" : "Dark"}</span>
+      </button>
+    </div>
   );
 }

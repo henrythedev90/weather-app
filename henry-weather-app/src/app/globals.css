@@ -9,6 +9,7 @@ html[data-theme="light"] {
   --text-color: #2d2d2d; /* Dark gray */
   --button-bg: #00d9ff; /* Neon cyan */
   --button-hover-bg: #00a3b8;
+  --card-bg: #2d2d2d;
 }
 
 html[data-theme="dark"] {
@@ -18,6 +19,7 @@ html[data-theme="dark"] {
   --text-color: #f4f4f9; /* Light text */
   --button-bg: #00d9ff; /* Neon cyan */
   --button-hover-bg: #0096b0;
+  --card-bg: #00d9ff;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -29,6 +31,6 @@ html[data-theme="dark"] {
 
 body {
   color: var(--text-color);
-  background: var(--bg-color);
+  background: #1a1a1a;
   font-family: Arial, Helvetica, sans-serif;
 }
