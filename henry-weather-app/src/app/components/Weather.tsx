@@ -1,13 +1,20 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Location, WeatherData, ForecastData } from "../types/weather-types";
-
-export default function Weather() {
+import LightModeButton from "./LightModeButton/LightModeButton";
+import Image from "next/image";
+export default function Weather({
+  theme,
+  toggleTheme,
+}: {
+  theme: string;
+  toggleTheme: () => void;
+}) {
   const [location, setLocation] = useState<Location>({ lat: null, lon: null });
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [forecast, setForecast] = useState<ForecastData | null>(null);
   const [error, setError] = useState<string>("");
-
+  const [isCelsius, setIsCelsius] = useState(true);
   useEffect(() => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
@@ -35,9 +42,6 @@ export default function Weather() {
 
   const getWeatherByLocation = async (lat: number, lon: number) => {
     try {
-      debugger;
-      console.log("lat", lat);
-      console.log("lon", lon);
       setError("");
       const [weatherRes, forecastRes] = await Promise.all([
         fetch(`/api/weather?lat=${lat}&lon=${lon}`),
@@ -53,37 +57,95 @@ export default function Weather() {
       const forecastData: ForecastData = await forecastRes.json();
 
       setWeather(weatherData);
+      debugger;
       setForecast(forecastData);
     } catch {
       setError("Failed to fetch weather data.");
     }
   };
 
-  return (
-    <div className="p-4 max-w-lg mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Weather App</h1>
+  const convertCelsiusToFahrenheit = (celsius: number) => {
+    return Math.round((celsius * 9) / 5 + 32);
+  };
 
-      {error && <p className="text-red-500">{error}</p>}
+  return (
+    <div
+      className="p-4 m-4 mr-4 ml-4 max-w-lg mx-auto border-2 border-accent rounded-lg"
+      style={{ border: "1px solid var(--accent)" }}
+    >
+      <div>
+        <h1 className="text-2xl font-bold mb-4 text-primary-color">
+          Weather App
+        </h1>
+        <LightModeButton theme={theme} toggleTheme={toggleTheme} />
+      </div>
+      {error && <p className="text-secondary-color">{error}</p>}
 
       {weather && (
-        <div className="mt-4 p-4 bg-gray-100 rounded">
+        <div className="mt-4 p-4 bg-gray-200 rounded">
           <h2 className="text-xl font-semibold">{weather.name}</h2>
-          <p>Temperature: {weather.main.temp}°C</p>
-          <p>Condition: {weather.weather[0].description}</p>
+          <div>
+            <p>Condition: {weather.weather[0].description}</p>
+            <p>
+              Temperature:{" "}
+              {isCelsius
+                ? weather.main.temp
+                : convertCelsiusToFahrenheit(weather.main.temp)}
+              °{isCelsius ? "C" : "F"}
+            </p>
+            <button
+              className="ml-2 bg-primary-color text-white py-1 px-2 rounded"
+              onClick={() => setIsCelsius(!isCelsius)}
+            >
+              Switch to {isCelsius ? "Fahrenheit" : "Celsius"}
+            </button>
+            <Image
+              src={`http://openweathermap.org/img/wn/${weather.weather[0]?.icon}.png`}
+              alt="Weather Icon"
+              width={50}
+              height={50}
+            />
+            <p>
+              Feels like:{" "}
+              {isCelsius
+                ? weather.main.temp
+                : convertCelsiusToFahrenheit(weather.main.feels_like)}
+              °{isCelsius ? "C" : "F"}
+            </p>
+          </div>
         </div>
       )}
 
       {forecast && (
-        <div className="mt-4 p-4 bg-gray-100 rounded">
+        <div className="mt-4 p-4 bg-gray-200 rounded">
           <h2 className="text-xl font-semibold">5-Day Forecast</h2>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="flex flex-col">
             {forecast.list
               .filter((_, index) => index % 8 === 0) // Show once per day
               .map((day, idx) => (
-                <div key={idx} className="bg-white p-2 rounded shadow">
-                  <p>{new Date(day.dt_txt).toLocaleDateString()}</p>
-                  <p>Temp: {day.main.temp}°C</p>
-                  <p>{day.weather[0].description}</p>
+                <div
+                  key={idx}
+                  className="bg-white p-2 rounded shadow mt-2 mb-2"
+                >
+                  <p>
+                    {new Date(day.dt_txt).toLocaleDateString("en-US", {
+                      weekday: "long",
+                    })}
+                  </p>
+                  <p>
+                    Temp:{" "}
+                    {isCelsius
+                      ? day.main.temp
+                      : convertCelsiusToFahrenheit(day.main.temp)}
+                    °{isCelsius ? "C" : "F"}
+                  </p>
+                  <p>{day.weather[0]?.description}</p>
+                  <Image
+                    src={`http://openweathermap.org/img/wn/${day.weather[0]?.icon}.png`}
+                    alt="Weather Icon"
+                    width={50}
+                    height={50}
+                  />
                 </div>
               ))}
           </div>
