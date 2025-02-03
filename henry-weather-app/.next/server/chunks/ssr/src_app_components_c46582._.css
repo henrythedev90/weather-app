@@ -1,0 +1,155 @@
+/* [project]/src/app/components/LightModeButton/LightModeButton.module.css [app-client] (css) */
+.LightModeButton-module__cze1tW__light_mode_button {
+  background-color: green;
+  color: var(--color);
+  border: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  height: 40px;
+  width: 100px;
+  position: relative;
+  border: 1px solid #fff0;
+}
+
+.LightModeButton-module__cze1tW__light_mode_button:focus {
+  outline: none;
+}
+
+.LightModeButton-module__cze1tW__light_mode_button[data-theme="dark"] span:nth-child(2) {
+  transform: translateX(30px);
+}
+
+
+/* [project]/src/app/components/Weather.module.css [app-client] (css) */
+.Weather-module__MRIvMG__weatherContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #000;
+  margin: 2rem;
+  padding: 1rem;
+  background-color: var(--bg-color);
+  width: 90%;
+  max-width: 1200px;
+}
+
+.Weather-module__MRIvMG__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  border: 1px solid var(--accent);
+  padding: 2rem;
+  flex-wrap: wrap;
+}
+
+.Weather-module__MRIvMG__weatherInfo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.Weather-module__MRIvMG__weatherInfo > :first-child {
+  flex: 30%;
+  padding: 1rem;
+  min-width: 200px;
+}
+
+.Weather-module__MRIvMG__weatherInfo > :nth-child(2) {
+  flex: 70%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.Weather-module__MRIvMG__todaysWeatherInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--accent);
+  padding: 2rem;
+  width: 100%;
+  max-width: 600px;
+}
+
+.Weather-module__MRIvMG__todaysWeatherInfo h2 {
+  border-bottom: 4px solid var(--accent);
+  font-weight: 700;
+  padding: .5rem;
+}
+
+.Weather-module__MRIvMG__todaysWeatherInfo div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 1rem;
+}
+
+.Weather-module__MRIvMG__todaysWeatherInfo div p {
+  padding: .5rem;
+}
+
+.Weather-module__MRIvMG__forecastList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  border: 1px solid var(--accent);
+  padding: 2rem;
+  width: 100%;
+  gap: 1rem;
+}
+
+.Weather-module__MRIvMG__forecastItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--accent);
+  padding: 1rem;
+  width: 100%;
+  max-width: 150px;
+  min-width: 120px;
+  min-height: 250px;
+  flex: calc(33.333% - 1rem);
+}
+
+@media (width <= 768px) {
+  .Weather-module__MRIvMG__weatherInfo {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .Weather-module__MRIvMG__forecastList {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .Weather-module__MRIvMG__forecastItem {
+    flex: calc(50% - 1rem);
+  }
+}
+
+@media (width <= 480px) {
+  .Weather-module__MRIvMG__header {
+    flex-direction: column;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .Weather-module__MRIvMG__forecastItem {
+    flex: 100%;
+    max-width: 200px;
+  }
+}
+
+
+/*# sourceMappingURL=src_app_components_c46582._.css.map*/

@@ -1,0 +1,22 @@
+/* [project]/src/app/components/LightModeButton/LightModeButton.module.css [app-client] (css) */
+.LightModeButton-module__cze1tW__light_mode_button {
+  background-color: green;
+  color: var(--color);
+  border: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  height: 40px;
+  width: 100px;
+  position: relative;
+  border: 1px solid #fff0;
+}
+
+.LightModeButton-module__cze1tW__light_mode_button:focus {
+  outline: none;
+}
+
+.LightModeButton-module__cze1tW__light_mode_button[data-theme="dark"] span:nth-child(2) {
+  transform: translateX(30px);
+}
+
+/*# sourceMappingURL=src_app_components_LightModeButton_LightModeButton_module_b52d8e.css.map*/
