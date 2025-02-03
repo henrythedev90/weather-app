@@ -1,5 +1,9 @@
-import Image from "next/image";
+import Weather from "./components/Weather";
 
 export default function Home() {
-  return <div>Henry Weather App</div>;
+  return (
+    <div>
+      <Weather />
+    </div>
+  );
 }
