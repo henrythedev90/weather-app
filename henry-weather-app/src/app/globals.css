@@ -22,13 +22,6 @@ html[data-theme="dark"] {
   --card-bg: #00d9ff;
 }
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-} */
-
 body {
   color: var(--text-color);
   background: #1a1a1a;
