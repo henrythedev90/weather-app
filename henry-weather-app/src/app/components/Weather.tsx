@@ -78,7 +78,7 @@ export default function Weather() {
       {/* Header */}
       <div className="flex justify-between items-center w-full pb-4 border-b border-gray-300 dark:border-gray-700">
         <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-gray-100">
-          Henry's Weather App
+          Henry&apos;s Weather App
         </h1>
         <a href="https://www.henry-nunez.com" target="_blank">
           <button className="px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-400 transition">

@@ -8,7 +8,7 @@ const Loading = () => {
       style={{ backgroundColor: "white" }}
     >
       <h1 className="text-4xl font-bold mb-4" style={{ color: "black" }}>
-        Welcome to Henry's Weather App
+        Welcome to Henry&apos;s Weather App
       </h1>
       <p className="text-2xl mb-4" style={{ color: "black" }}>
         Loading...
