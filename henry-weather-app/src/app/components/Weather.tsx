@@ -97,7 +97,8 @@ export default function Weather() {
           <p className="text-gray-700 dark:text-gray-300">
             {weather.weather[0].description}
           </p>
-          <p>
+          <p className="text-lg font-medium text-gray-800 dark:text-gray-200">
+            Temp:{" "}
             {isCelsius
               ? weather.main.temp
               : convertCelsiusToFahrenheit(weather.main.temp)}
