@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 1, "column": 0}, "map": {"version":3,"sources":["turbopack://[project]/src/app/components/LightModeButton/LightModeButton.module.css"],"sourcesContent":[".light_mode_button {\n  background-color: green;\n  color: var(--color);\n  border: 0;\n  box-sizing: border-box;\n  cursor: pointer;\n  height: 40px;\n  width: 100px;\n  position: relative;\n  border: 1px solid rgba(255, 255, 255, 0);\n}\n\n.light_mode_button:focus {\n  outline: none; /* Not ideal for accessibility */\n}\n\n.light_mode_button[data-theme=\"dark\"] span:nth-child(2) {\n  transform: translateX(\n    30px\n  ); /* Adjusted to ensure the button moves within the visible area */\n}\n"],"names":[],"mappings":"AAAA;;;;;;;;;;;;AAYA;;;;AAIA"}},
-    {"offset": {"line": 20, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"A"}}]
-}
