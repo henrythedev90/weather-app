@@ -2,6 +2,8 @@
 
 A modern, responsive weather application that displays real-time weather information and forecasts with dynamic themes that change based on current weather conditions.
 
+_Last updated: July 2023_
+
 ## Features
 
 - **Dynamic Weather-Based Themes**: The app's color scheme adapts to the current weather conditions (sunny, cloudy, rainy, etc.)

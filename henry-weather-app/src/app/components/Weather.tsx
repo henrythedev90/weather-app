@@ -135,7 +135,7 @@ export default function Weather() {
       setForecast(forecastData);
       setIsLoading(false);
       setNoLocationProvided(false);
-    } catch (error) {
+    } catch (error: unknown) {
       setError("Failed to fetch weather data.");
       setIsLoading(false);
     }
@@ -240,7 +240,7 @@ export default function Weather() {
         {noLocationProvided && !weather && !error && (
           <div className="theme-card p-6 my-8 rounded-lg text-center">
             <h2 className="text-2xl font-bold mb-4">
-              Welcome to Henry's Weather App!
+              Welcome to Henry&apos;s Weather App!
             </h2>
             <p className="mb-4 text-lg">
               Please enter a city name in the search box above to check the
