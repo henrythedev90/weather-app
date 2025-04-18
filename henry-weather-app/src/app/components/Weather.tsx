@@ -22,6 +22,21 @@ export default function Weather() {
   const [noLocationProvided, setNoLocationProvided] = useState(false);
   const { setTheme, getThemeColors } = useTheme();
 
+  const NA = "🌎";
+  const AF = "🌍";
+  const AS = "🌏";
+
+  const globalEmoji = useMemo(() => [NA, AF, AS], []);
+  const [currentEmoji, setCurrentEmoji] = useState(globalEmoji[0]);
+
+  let i = 0;
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentEmoji(globalEmoji[i++ % globalEmoji.length]);
+    }, 500);
+    return () => clearInterval(interval);
+  }, [globalEmoji, i]);
+
   // Apply theme based on weather
   useEffect(() => {
     if (weather?.weather[0]) {
@@ -272,6 +287,7 @@ export default function Weather() {
             <a href="https://www.henry-nunez.com" target="_blank">
               <button className="theme-button px-4 py-2 rounded-lg">
                 Visit Me!
+                <span className="ml-2">{currentEmoji}</span>
               </button>
             </a>
           </div>
