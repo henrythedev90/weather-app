@@ -26,8 +26,13 @@ export default async function handler(
 
     const data = await forecastRes.json();
     res.status(200).json(data);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("Forecast API Fetch Error:", error);
-    res.status(500).json({ error: "Failed to fetch forecast data" });
+    res.status(500).json({
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to fetch forecast data",
+    });
   }
 }

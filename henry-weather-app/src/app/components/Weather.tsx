@@ -107,7 +107,7 @@ export default function Weather() {
     }
 
     return () => clearTimeout(timeoutId);
-  }, []);
+  }, [isInitialLoad]);
 
   useEffect(() => {
     if (location.lat !== 0 && location.lon !== 0) {
@@ -135,7 +135,8 @@ export default function Weather() {
       setForecast(forecastData);
       setIsLoading(false);
       setNoLocationProvided(false);
-    } catch (error: unknown) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (err: unknown) {
       setError("Failed to fetch weather data.");
       setIsLoading(false);
     }
