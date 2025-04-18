@@ -4,6 +4,10 @@ export interface Location {
 }
 export interface WeatherData {
   name: string;
+  coord: {
+    lat: number;
+    lon: number;
+  };
   main: {
     temp: number;
     temp_min: number;

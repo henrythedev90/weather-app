@@ -2,28 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
-html[data-theme="light"] {
+html {
   --bg-color: #f4f4f9;
-  --accent: #2d2d2d; /* Neon cyan */
-  --secondary-color: #32ff7e; /* Neon green */
-  --text-color: #2d2d2d; /* Dark gray */
-  --button-bg: #00d9ff; /* Neon cyan */
+  --accent: #2d2d2d;
+  --secondary-color: #32ff7e;
+  --text-color: #2d2d2d;
+  --button-bg: #00d9ff;
   --button-hover-bg: #00a3b8;
   --card-bg: #2d2d2d;
 }
 
-html[data-theme="dark"] {
-  --bg-color: #1a1a1a; /* Dark background */
-  --accent: #00d9ff; /* Neon cyan */
-  --secondary-color: #32ff7e; /* Neon green */
-  --text-color: #f4f4f9; /* Light text */
-  --button-bg: #00d9ff; /* Neon cyan */
-  --button-hover-bg: #0096b0;
-  --card-bg: #00d9ff;
-}
-
 body {
   color: var(--text-color);
-  background: #1a1a1a;
+  background: var(--bg-color);
   font-family: Arial, Helvetica, sans-serif;
 }

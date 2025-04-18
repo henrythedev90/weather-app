@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Location,
   WeatherData,
@@ -8,32 +8,105 @@ import {
 } from "../types/weather-types";
 import Image from "next/image";
 import Loading from "./Loading/Loading";
+import { useTheme, getWeatherTheme } from "../context/ThemeContext";
+import UserInput from "./UserInput";
+
 export default function Weather() {
   const [location, setLocation] = useState<Location>({ lat: 0, lon: 0 });
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [forecast, setForecast] = useState<ForecastData | null>(null);
   const [error, setError] = useState<string>("");
   const [isCelsius, setIsCelsius] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [noLocationProvided, setNoLocationProvided] = useState(false);
+  const { setTheme, getThemeColors } = useTheme();
+
+  // Apply theme based on weather
+  useEffect(() => {
+    if (weather?.weather[0]) {
+      const weatherTheme = getWeatherTheme(
+        weather.weather[0].main,
+        weather.weather[0].icon
+      );
+      setTheme(weatherTheme);
+    }
+  }, [weather, setTheme]);
+
+  // Apply theme CSS variables
+  useEffect(() => {
+    if (weather) {
+      const colors = getThemeColors();
+      document.documentElement.style.setProperty(
+        "--theme-primary",
+        colors.primary
+      );
+      document.documentElement.style.setProperty(
+        "--theme-secondary",
+        colors.secondary
+      );
+      document.documentElement.style.setProperty(
+        "--theme-background",
+        colors.background
+      );
+      document.documentElement.style.setProperty(
+        "--theme-card-background",
+        colors.cardBackground
+      );
+      document.documentElement.style.setProperty("--theme-text", colors.text);
+      document.documentElement.style.setProperty(
+        "--theme-accent",
+        colors.accent
+      );
+    }
+  }, [weather, getThemeColors]);
+
+  // Get user's location with a timeout
   useEffect(() => {
     setIsLoading(true);
+
+    // Set a timeout to prevent waiting too long for geolocation
+    const timeoutId = setTimeout(() => {
+      if (isInitialLoad) {
+        setNoLocationProvided(true);
+        setIsLoading(false);
+        setIsInitialLoad(false);
+      }
+    }, 5000); // 5 seconds timeout
+
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
+          clearTimeout(timeoutId);
           setLocation({
             lat: position.coords.latitude,
             lon: position.coords.longitude,
           });
           setIsLoading(false);
+          setIsInitialLoad(false);
+          setNoLocationProvided(false);
         },
-        () => {
-          setError("Unable to retrieve location. Please enter a city.");
+        (geoError) => {
+          clearTimeout(timeoutId);
+          console.log("Geolocation error:", geoError.message);
+          setNoLocationProvided(true);
+          setIsLoading(false);
+          setIsInitialLoad(false);
+        },
+        {
+          enableHighAccuracy: false,
+          timeout: 4000, // 4 seconds timeout
+          maximumAge: 0,
         }
       );
     } else {
-      setError("Geolocation is not supported by this browser.");
+      clearTimeout(timeoutId);
+      setNoLocationProvided(true);
       setIsLoading(false);
+      setIsInitialLoad(false);
     }
+
+    return () => clearTimeout(timeoutId);
   }, []);
 
   useEffect(() => {
@@ -61,133 +134,297 @@ export default function Weather() {
       setWeather(weatherData);
       setForecast(forecastData);
       setIsLoading(false);
-    } catch {
+      setNoLocationProvided(false);
+    } catch (error) {
       setError("Failed to fetch weather data.");
       setIsLoading(false);
     }
+  };
+
+  const getWeatherByCity = async (city: string) => {
+    try {
+      setIsLoading(true);
+      setError("");
+      setNoLocationProvided(false);
+
+      const [weatherRes, forecastRes] = await Promise.all([
+        fetch(`/api/getWeatherByCity?city=${encodeURIComponent(city)}`),
+        fetch(`/api/getForecastByCity?city=${encodeURIComponent(city)}`),
+      ]);
+
+      if (!weatherRes.ok) {
+        const errorData = await weatherRes.json();
+        throw new Error(errorData.error || "Failed to find city");
+      }
+
+      if (!forecastRes.ok) {
+        const errorData = await forecastRes.json();
+        throw new Error(errorData.error || "Failed to fetch forecast");
+      }
+
+      const weatherData: WeatherData = await weatherRes.json();
+      const forecastData: ForecastData = await forecastRes.json();
+
+      // Update coordinates in case user wants to get local weather later
+      if (weatherData.coord) {
+        setLocation({
+          lat: weatherData.coord.lat,
+          lon: weatherData.coord.lon,
+        });
+      }
+
+      setWeather(weatherData);
+      setForecast(forecastData);
+      setIsLoading(false);
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "Failed to fetch weather data."
+      );
+      setIsLoading(false);
+    }
+  };
+
+  const handleCitySearch = (city: string) => {
+    getWeatherByCity(city);
   };
 
   const convertCelsiusToFahrenheit = (celsius: number) => {
     return Math.round((celsius * 9) / 5 + 32);
   };
 
-  return isLoading ? (
-    <Loading />
-  ) : (
-    <div className="flex flex-col items-center w-full max-w-4xl mx-auto p-6 bg-gray-100 dark:bg-gray-900 rounded-lg shadow-lg">
-      {/* Header */}
-      <div className="flex justify-between items-center w-full pb-4 border-b border-gray-300 dark:border-gray-700">
-        <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-gray-100">
-          Henrys Weather App
-        </h1>
-        <a href="https://www.henry-nunez.com" target="_blank">
-          <button className="px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-400 transition">
-            Visit Me!
-          </button>
-        </a>
+  // Get animation class name based on current weather
+  const animationClass = useMemo(() => {
+    if (!weather?.weather[0]) return "";
+
+    const weatherMain = weather.weather[0].main.toLowerCase();
+    const isNight = weather.weather[0].icon.endsWith("n");
+
+    if (weatherMain === "clear") {
+      return isNight ? "clear-night-animation" : "clear-day-animation";
+    } else if (weatherMain === "rain" || weatherMain === "drizzle") {
+      return "rain-animation";
+    } else if (weatherMain === "snow") {
+      return "snow-animation";
+    }
+
+    return "";
+  }, [weather]);
+
+  // If it's the initial load and we're still loading, show the full loading screen
+  if (isInitialLoad && isLoading) {
+    return <Loading />;
+  }
+
+  return (
+    <div className="theme-container min-h-screen flex flex-col items-center w-full p-6 relative">
+      {/* Animation layer */}
+      {animationClass && <div className={animationClass}></div>}
+
+      <div className="max-w-4xl mx-auto w-full">
+        {/* Header */}
+        <div className="theme-header flex justify-between items-center w-full p-4 rounded-lg mb-6">
+          <h1 className="text-2xl font-bold text-center">Henrys Weather App</h1>
+          <div className="flex gap-4">
+            <a href="https://www.henry-nunez.com" target="_blank">
+              <button className="theme-button px-4 py-2 rounded-lg">
+                Visit Me!
+              </button>
+            </a>
+          </div>
+        </div>
+
+        {/* Search by city */}
+        <UserInput onSearch={handleCitySearch} />
+
+        {/* Welcome message */}
+        {noLocationProvided && !weather && !error && (
+          <div className="theme-card p-6 my-8 rounded-lg text-center">
+            <h2 className="text-2xl font-bold mb-4">
+              Welcome to Henry's Weather App!
+            </h2>
+            <p className="mb-4 text-lg">
+              Please enter a city name in the search box above to check the
+              weather forecast.
+            </p>
+            <p className="mb-4 text-lg">Or</p>
+            <p className="mb-4 text-lg">
+              You can click on the button below to check out the weather in your
+              current location.
+            </p>
+            <div className="my-5">
+              <button
+                onClick={() => {
+                  setIsLoading(true);
+                  navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                      setLocation({
+                        lat: position.coords.latitude,
+                        lon: position.coords.longitude,
+                      });
+                      setIsLoading(false);
+                      setNoLocationProvided(false);
+                    },
+                    (error) => {
+                      console.log("Geolocation error:", error.message);
+                      setIsLoading(false);
+                      // Keep noLocationProvided as true
+                    },
+                    { enableHighAccuracy: false, timeout: 5000, maximumAge: 0 }
+                  );
+                }}
+                className="theme-button px-5 py-3 rounded-lg text-white font-medium text-lg"
+              >
+                Use My Location
+              </button>
+            </div>
+            <div className="mt-5 p-5 bg-gray-200 rounded-lg border border-gray-300">
+              <p className="font-bold mb-3 text-base">
+                How to enable location services:
+              </p>
+              <ul className="text-left list-disc list-inside space-y-2">
+                <li className="font-medium">
+                  <strong className="text-black">Chrome/Edge:</strong> Click the
+                  lock/info icon in the address bar → Site settings → Allow
+                  location
+                </li>
+                <li className="font-medium">
+                  <strong className="text-black">Firefox:</strong> Click the
+                  shield icon in the address bar → Site permissions → Allow
+                  location
+                </li>
+                <li className="font-medium">
+                  <strong className="text-black">Safari:</strong> Go to Safari
+                  preferences → Websites → Location → Allow for this website
+                </li>
+                <li className="font-medium">
+                  <strong className="text-black">Mobile:</strong> Check your
+                  device settings for browser location permissions
+                </li>
+              </ul>
+            </div>
+          </div>
+        )}
+
+        {/* Error message */}
+        {error && (
+          <div className="p-4 my-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
+            {error}
+          </div>
+        )}
+
+        {/* Loading indicator for data fetch */}
+        {!isInitialLoad && isLoading && (
+          <div className="flex justify-center my-8">
+            <div className="animate-pulse flex flex-col items-center">
+              <div className="h-8 w-32 bg-gray-300 rounded mb-4"></div>
+              <div className="h-4 w-24 bg-gray-300 rounded mb-2"></div>
+              <div className="h-4 w-16 bg-gray-300 rounded"></div>
+            </div>
+          </div>
+        )}
+
+        {/* Weather Info */}
+        {weather && (
+          <div className="theme-card mt-6 p-6 rounded-lg shadow-md w-full text-center">
+            <h2 className="text-xl font-semibold">{weather.name}</h2>
+            <p className="theme-accent-text">
+              {weather.weather[0].description}
+            </p>
+            <p className="text-lg font-medium">
+              Temp:{" "}
+              {isCelsius
+                ? Math.round(weather.main.temp)
+                : convertCelsiusToFahrenheit(weather.main.temp)}
+              °{isCelsius ? "C" : "F"}
+            </p>
+            <p className="text-lg font-medium">
+              Feels like:{" "}
+              {isCelsius
+                ? Math.round(weather.main.feels_like)
+                : convertCelsiusToFahrenheit(weather.main.feels_like)}
+              °{isCelsius ? "C" : "F"}
+            </p>
+            <Image
+              src={`http://openweathermap.org/img/wn/${weather.weather[0]?.icon}.png`}
+              alt="Weather Icon"
+              width={50}
+              height={50}
+              className="mx-auto"
+            />
+          </div>
+        )}
+
+        {/* Forecast */}
+        {forecast && (
+          <div className="mt-6 w-full">
+            <h2 className="text-xl font-semibold text-center">
+              5-Day Forecast
+            </h2>
+            <p className="text-center">
+              {forecast.city.name}, {forecast.city.country}
+            </p>
+            <p className="text-center opacity-75">
+              Sunrise:{" "}
+              {new Date(forecast.city.sunrise * 1000).toLocaleTimeString(
+                "en-US",
+                { hour: "2-digit", minute: "2-digit" }
+              )}
+              &nbsp;|&nbsp; Sunset:{" "}
+              {new Date(forecast.city.sunset * 1000).toLocaleTimeString(
+                "en-US",
+                {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }
+              )}
+            </p>
+
+            {/* Toggle Button */}
+            <div className="flex justify-center mt-4">
+              <button
+                className="theme-button px-4 py-2 rounded-lg"
+                onClick={() => setIsCelsius(!isCelsius)}
+              >
+                Switch to {isCelsius ? "Fahrenheit" : "Celsius"}
+              </button>
+            </div>
+
+            {/* Forecast List */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-6">
+              {forecast.list
+                .filter((_, index) => index % 8 === 0) // Show once per day
+                .map((day: Forecast, idx) => (
+                  <div
+                    key={idx}
+                    className="theme-card p-4 rounded-lg shadow-md flex flex-col items-center"
+                  >
+                    <p className="text-lg font-semibold">
+                      {new Date(day.dt_txt).toLocaleDateString("en-US", {
+                        weekday: "long",
+                      })}
+                    </p>
+                    <p>
+                      Temp:{" "}
+                      {isCelsius
+                        ? Math.round(day.main.temp)
+                        : convertCelsiusToFahrenheit(day.main.temp)}
+                      °{isCelsius ? "C" : "F"}
+                    </p>
+                    <p className="theme-accent-text">
+                      {day.weather[0]?.description}
+                    </p>
+                    <Image
+                      src={`http://openweathermap.org/img/wn/${day.weather[0]?.icon}.png`}
+                      alt="Weather Icon"
+                      width={50}
+                      height={50}
+                    />
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
       </div>
-
-      {error && <p className="text-red-500">{error}</p>}
-      {/* Weather Info */}
-      {weather && (
-        <div className="mt-6 p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md w-full text-center">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-            {weather.name}
-          </h2>
-          <p className="text-gray-700 dark:text-gray-300">
-            {weather.weather[0].description}
-          </p>
-          <p className="text-lg font-medium text-gray-800 dark:text-gray-200">
-            Temp:{" "}
-            {isCelsius
-              ? weather.main.temp
-              : convertCelsiusToFahrenheit(weather.main.temp)}
-            °{isCelsius ? "C" : "F"}
-          </p>
-          <p className="text-lg font-medium text-gray-800 dark:text-gray-200">
-            Feels like:{" "}
-            {isCelsius
-              ? weather.main.temp
-              : convertCelsiusToFahrenheit(weather.main.feels_like)}
-            °{isCelsius ? "C" : "F"}
-          </p>
-          <Image
-            src={`http://openweathermap.org/img/wn/${weather.weather[0]?.icon}.png`}
-            alt="Weather Icon"
-            width={50}
-            height={50}
-            className="mx-auto"
-          />
-        </div>
-      )}
-
-      {/* Forecast */}
-      {forecast && (
-        <div className="mt-6 w-full">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 text-center">
-            5-Day Forecast
-          </h2>
-          <p className="text-center text-gray-700 dark:text-gray-300">
-            {forecast.city.name}, {forecast.city.country}
-          </p>
-          <p className="text-center text-gray-600 dark:text-gray-400">
-            Sunrise:{" "}
-            {new Date(forecast.city.sunrise * 1000).toLocaleTimeString(
-              "en-US",
-              { hour: "2-digit", minute: "2-digit" }
-            )}
-            &nbsp;|&nbsp; Sunset:{" "}
-            {new Date(forecast.city.sunset * 1000).toLocaleTimeString("en-US", {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </p>
-
-          {/* Toggle Button */}
-          <div className="flex justify-center mt-4">
-            <button
-              className="px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-400 transition"
-              onClick={() => setIsCelsius(!isCelsius)}
-            >
-              Switch to {isCelsius ? "Fahrenheit" : "Celsius"}
-            </button>
-          </div>
-
-          {/* Forecast List */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-6">
-            {forecast.list
-              .filter((_, index) => index % 8 === 0) // Show once per day
-              .map((day: Forecast, idx) => (
-                <div
-                  key={idx}
-                  className="p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md flex flex-col items-center"
-                >
-                  <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-                    {new Date(day.dt_txt).toLocaleDateString("en-US", {
-                      weekday: "long",
-                    })}
-                  </p>
-                  <p className="text-gray-700 dark:text-gray-300">
-                    Temp:{" "}
-                    {isCelsius
-                      ? day.main.temp
-                      : convertCelsiusToFahrenheit(day.main.temp)}
-                    °{isCelsius ? "C" : "F"}
-                  </p>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    {day.weather[0]?.description}
-                  </p>
-                  <Image
-                    src={`http://openweathermap.org/img/wn/${day.weather[0]?.icon}.png`}
-                    alt="Weather Icon"
-                    width={50}
-                    height={50}
-                  />
-                </div>
-              ))}
-          </div>
-        </div>
-      )}
     </div>
   );
 }
