@@ -136,6 +136,7 @@ export default function Weather() {
       setForecast(forecastData);
       setIsLoading(false);
       setNoLocationProvided(false);
+      // eslint-disable-next-line
     } catch (err: unknown) {
       setError("Failed to fetch weather data.");
       setIsLoading(false);
