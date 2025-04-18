@@ -119,13 +119,14 @@ export default function Weather() {
     try {
       setIsLoading(true);
       setError("");
+
       const [weatherRes, forecastRes] = await Promise.all([
         fetch(`/api/weather?lat=${lat}&lon=${lon}`),
         fetch(`/api/forecast?lat=${lat}&lon=${lon}`),
       ]);
 
       if (!weatherRes.ok || !forecastRes.ok) {
-        throw new Error("Failed to fetch data");
+        throw new Error("Failed to fetch weather data");
       }
 
       const weatherData: WeatherData = await weatherRes.json();
@@ -135,7 +136,6 @@ export default function Weather() {
       setForecast(forecastData);
       setIsLoading(false);
       setNoLocationProvided(false);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err: unknown) {
       setError("Failed to fetch weather data.");
       setIsLoading(false);
@@ -211,6 +211,48 @@ export default function Weather() {
     return "";
   }, [weather]);
 
+  // Add this function just before the return statement
+  const handleLocationRequest = () => {
+    if (!navigator.geolocation) {
+      setError("Geolocation is not supported by this browser");
+      return;
+    }
+
+    setIsLoading(true);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocation({
+          lat: position.coords.latitude,
+          lon: position.coords.longitude,
+        });
+        setIsLoading(false);
+        setNoLocationProvided(false);
+      },
+      (error) => {
+        // Provide user-friendly messages based on error code
+        let userMsg = "Failed to get your location";
+        if (error.code === 1) {
+          userMsg =
+            "Location access was denied. Please enable location in your browser and try again.";
+        } else if (error.code === 2) {
+          userMsg =
+            "Your location is currently unavailable. Please try again later.";
+        } else if (error.code === 3) {
+          userMsg = "Location request timed out. Please try again.";
+        }
+
+        setError(userMsg);
+        setIsLoading(false);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      }
+    );
+  };
+
   // If it's the initial load and we're still loading, show the full loading screen
   if (isInitialLoad && isLoading) {
     return <Loading />;
@@ -254,25 +296,7 @@ export default function Weather() {
             </p>
             <div className="my-5">
               <button
-                onClick={() => {
-                  setIsLoading(true);
-                  navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                      setLocation({
-                        lat: position.coords.latitude,
-                        lon: position.coords.longitude,
-                      });
-                      setIsLoading(false);
-                      setNoLocationProvided(false);
-                    },
-                    (error) => {
-                      console.log("Geolocation error:", error.message);
-                      setIsLoading(false);
-                      // Keep noLocationProvided as true
-                    },
-                    { enableHighAccuracy: false, timeout: 5000, maximumAge: 0 }
-                  );
-                }}
+                onClick={handleLocationRequest}
                 className="theme-button px-5 py-3 rounded-lg text-white font-medium text-lg"
               >
                 Use My Location

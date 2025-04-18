@@ -1,6 +1,4 @@
 {
-  "/api/forecast": "pages/api/forecast.js",
   "/api/weather": "pages/api/weather.js",
-  "/api/getForecastByCity": "pages/api/getForecastByCity.js",
-  "/api/getWeatherByCity": "pages/api/getWeatherByCity.js"
+  "/api/forecast": "pages/api/forecast.js"
 }
