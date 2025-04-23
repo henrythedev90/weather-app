@@ -6,7 +6,7 @@ _Last updated: April 2025_
 
 ## Screenshot
 
-![Henry's Weather App Screenshot](screenshot.png)
+![Henry's Weather App Screenshot](/henry-weather-app/public/images/screenshot.png)
 
 _The app showing weather and location map for Baja Mar with 5-day forecast_
 
