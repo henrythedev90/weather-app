@@ -10,6 +10,10 @@ import Image from "next/image";
 import Loading from "./Loading/Loading";
 import { useTheme, getWeatherTheme } from "../context/ThemeContext";
 import UserInput from "./UserInput";
+import dynamic from "next/dynamic";
+
+// Import MapComponent with client-side only rendering (no SSR)
+const MapComponent = dynamic(() => import("./MapComponent"), { ssr: false });
 
 export default function Weather() {
   const [location, setLocation] = useState<Location>({ lat: 0, lon: 0 });
@@ -20,6 +24,7 @@ export default function Weather() {
   const [isLoading, setIsLoading] = useState(true);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [noLocationProvided, setNoLocationProvided] = useState(false);
+  const [showMap, setShowMap] = useState(false);
   const { setTheme, getThemeColors } = useTheme();
 
   const NA = "🌎";
@@ -365,34 +370,76 @@ export default function Weather() {
           </div>
         )}
 
-        {/* Weather Info */}
+        {/* Weather Info and Map Container - Wrap both sections for responsive layout */}
         {weather && (
-          <div className="theme-card mt-6 p-6 rounded-lg shadow-md w-full text-center">
-            <h2 className="text-xl font-semibold">{weather.name}</h2>
-            <p className="theme-accent-text">
-              {weather.weather[0].description}
-            </p>
-            <p className="text-lg font-medium">
-              Temp:{" "}
-              {isCelsius
-                ? Math.round(weather.main.temp)
-                : convertCelsiusToFahrenheit(weather.main.temp)}
-              °{isCelsius ? "C" : "F"}
-            </p>
-            <p className="text-lg font-medium">
-              Feels like:{" "}
-              {isCelsius
-                ? Math.round(weather.main.feels_like)
-                : convertCelsiusToFahrenheit(weather.main.feels_like)}
-              °{isCelsius ? "C" : "F"}
-            </p>
-            <Image
-              src={`http://openweathermap.org/img/wn/${weather.weather[0]?.icon}.png`}
-              alt="Weather Icon"
-              width={50}
-              height={50}
-              className="mx-auto"
-            />
+          <div className="flex flex-col lg:flex-row gap-4 mt-6">
+            {/* Weather Info Card */}
+            <div className="theme-card p-6 rounded-lg shadow-md w-full lg:w-1/2 text-center">
+              <h2 className="text-xl font-semibold">{weather.name}</h2>
+              <p className="theme-accent-text">
+                {weather.weather[0].description}
+              </p>
+              <p className="text-lg font-medium">
+                Temp:{" "}
+                {isCelsius
+                  ? Math.round(weather.main.temp)
+                  : convertCelsiusToFahrenheit(weather.main.temp)}
+                °{isCelsius ? "C" : "F"}
+              </p>
+              <p className="text-lg font-medium">
+                Feels like:{" "}
+                {isCelsius
+                  ? Math.round(weather.main.feels_like)
+                  : convertCelsiusToFahrenheit(weather.main.feels_like)}
+                °{isCelsius ? "C" : "F"}
+              </p>
+              <Image
+                src={`http://openweathermap.org/img/wn/${weather.weather[0]?.icon}.png`}
+                alt="Weather Icon"
+                width={50}
+                height={50}
+                className="mx-auto"
+              />
+
+              {/* Map toggle button */}
+              <div className="mt-3">
+                <button
+                  onClick={() => setShowMap(!showMap)}
+                  className="theme-button px-4 py-2 rounded-lg"
+                >
+                  {showMap ? "Hide Map" : "Show Location Map"}
+                </button>
+              </div>
+            </div>
+
+            {/* Mapbox Map */}
+            {showMap && location.lat !== 0 && location.lon !== 0 ? (
+              <div className="w-full lg:w-1/2">
+                <div className="theme-card p-4 rounded-lg shadow-md h-full">
+                  <h2 className="text-xl font-semibold mb-2 text-center">
+                    Your Location
+                  </h2>
+                  <p className="text-center mb-3">
+                    <span className="font-medium">Coordinates:</span>{" "}
+                    {location.lat.toFixed(4)}, {location.lon.toFixed(4)}
+                  </p>
+                  <div className="h-[300px] lg:h-[calc(100%-80px)] w-full rounded-lg overflow-hidden">
+                    <MapComponent
+                      latitude={location.lat}
+                      longitude={location.lon}
+                    />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="w-full lg:w-1/2">
+                <div className="theme-card p-4 rounded-lg shadow-md h-full">
+                  <h2 className="text-xl font-semibold mb-2 text-center">
+                    See your location on the map
+                  </h2>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
