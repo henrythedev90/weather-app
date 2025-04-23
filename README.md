@@ -2,12 +2,13 @@
 
 A modern, responsive weather application that displays real-time weather information and forecasts with dynamic themes that change based on current weather conditions.
 
-_Last updated: July 2023_
+_Last updated: June 2024_
 
 ## Features
 
 - **Dynamic Weather-Based Themes**: The app's color scheme adapts to the current weather conditions (sunny, cloudy, rainy, etc.)
 - **Location-Based Weather**: Get weather for your current location with geolocation
+- **Interactive Map View**: Visualize your location on an embedded map
 - **Search by City**: Look up weather information for any city around the world
 - **5-Day Forecast**: View a 5-day weather forecast with daily summaries
 - **Temperature Unit Toggle**: Switch between Celsius and Fahrenheit
@@ -16,6 +17,8 @@ _Last updated: July 2023_
 
 ## Recent Updates
 
+- **NEW! Added interactive map feature**: View your selected location on an embedded Mapbox map
+- **Improved responsive layout**: Better display on both desktop and mobile devices
 - Added dynamic themes that change based on weather conditions
 - Implemented city search functionality
 - Added loading states with better error handling
@@ -30,6 +33,7 @@ _Last updated: July 2023_
 - **TypeScript**: For type-safe code
 - **Tailwind CSS**: For responsive and customizable UI components
 - **OpenWeatherMap API**: For retrieving weather data
+- **Mapbox GL JS**: For interactive location maps
 - **Geolocation API**: For getting user's current location
 
 ## Setup Instructions
@@ -52,10 +56,11 @@ _Last updated: July 2023_
    npm install
    ```
 
-4. Create a `.env.local` file in the root directory and add your OpenWeatherMap API key:
+4. Create a `.env.local` file in the root directory and add your API keys:
 
    ```
    OPENWEATHER_API_KEY=your_api_key_here
+   NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=your_mapbox_token_here
    ```
 
 5. Start the development server:
@@ -68,10 +73,16 @@ _Last updated: July 2023_
 
 ## API Integration
 
-This app uses the OpenWeatherMap API for fetching weather data. To make it work, you will need an API key:
+This app uses the following APIs:
 
-1. Sign up for a free API key at [OpenWeatherMap](https://openweathermap.org/api)
-2. Add the key to your `.env.local` file as shown in the setup instructions
+- **OpenWeatherMap API** for fetching weather data
+
+  1. Sign up for a free API key at [OpenWeatherMap](https://openweathermap.org/api)
+  2. Add the key to your `.env.local` file as shown in the setup instructions
+
+- **Mapbox GL JS** for displaying interactive maps
+  1. Sign up for a free API key at [Mapbox](https://www.mapbox.com/)
+  2. Add the key to your `.env.local` file with the prefix `NEXT_PUBLIC_` as shown in the setup instructions
 
 ## How to Use
 
@@ -79,7 +90,8 @@ This app uses the OpenWeatherMap API for fetching weather data. To make it work,
 2. If you prefer to check weather for a different location, use the search box at the top
 3. Enter a city name and press Enter or click the Search button
 4. View the current weather and 5-day forecast
-5. Use the temperature toggle button to switch between Celsius and Fahrenheit
+5. Click "Show Location Map" to view your selected location on the map
+6. Use the temperature toggle button to switch between Celsius and Fahrenheit
 
 ## Contribution
 

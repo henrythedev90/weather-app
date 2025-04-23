@@ -1,24 +1,28 @@
 {
   "pages": {
+    "/_not-found/page": [
+      "static/chunks/webpack-a3e78c7723d8495a.js",
+      "static/chunks/4bd1b696-12da2e4e9e8221e2.js",
+      "static/chunks/517-e9eb63108f7a5a7b.js",
+      "static/chunks/main-app-8dc37ae12d433929.js",
+      "static/chunks/app/_not-found/page-2800ebc02a09c9fe.js"
+    ],
+    "/layout": [
+      "static/chunks/webpack-a3e78c7723d8495a.js",
+      "static/chunks/4bd1b696-12da2e4e9e8221e2.js",
+      "static/chunks/517-e9eb63108f7a5a7b.js",
+      "static/chunks/main-app-8dc37ae12d433929.js",
+      "static/css/716e37c7f672eac9.css",
+      "static/chunks/app/layout-74eacc4d12543948.js"
+    ],
     "/page": [
-      "static/chunks/_a91c21._.js",
-      "static/chunks/src_app_favicon_ico_mjs_ddfdf0._.js",
-      "static/chunks/[root of the server]__9344ab._.css",
-      "static/chunks/_606fb5._.js",
-      "static/chunks/src_app_layout_tsx_61af54._.js",
-      "static/chunks/node_modules_next_1c7051._.js",
-      "static/chunks/src_app_0ca25d._.js",
-      "static/chunks/src_app_components_Loading_Loading_module_2d0a7b.css",
-      "static/chunks/src_app_components_MapComponent_tsx_81cc47._.js",
-      "static/chunks/src_app_page_tsx_38a0e8._.js",
-      "static/chunks/node_modules_next_dist_compiled_react-dom_1f56dc._.js",
-      "static/chunks/node_modules_next_dist_compiled_107ce8._.js",
-      "static/chunks/node_modules_next_dist_client_523921._.js",
-      "static/chunks/node_modules_next_dist_4bb10e._.js",
-      "static/chunks/node_modules_@swc_helpers_cjs_00636a._.js",
-      "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_d0a96d._.js",
-      "static/chunks/_e69f0d._.js",
-      "static/chunks/_d95469._.js"
+      "static/chunks/webpack-a3e78c7723d8495a.js",
+      "static/chunks/4bd1b696-12da2e4e9e8221e2.js",
+      "static/chunks/517-e9eb63108f7a5a7b.js",
+      "static/chunks/main-app-8dc37ae12d433929.js",
+      "static/css/c3e70927569d625e.css",
+      "static/chunks/631-b6fb39ae7ddb0feb.js",
+      "static/chunks/app/page-ac3b9b6383c79bb3.js"
     ]
   }
 }
