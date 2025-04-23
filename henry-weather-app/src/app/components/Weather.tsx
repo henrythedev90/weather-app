@@ -412,9 +412,9 @@ export default function Weather() {
               </div>
             </div>
 
-            {/* Mapbox Map */}
-            {showMap && location.lat !== 0 && location.lon !== 0 && (
-              <div className="w-full lg:w-1/2">
+            {/* Map Container - Always present for consistent layout */}
+            <div className="w-full lg:w-1/2">
+              {showMap && location.lat !== 0 && location.lon !== 0 ? (
                 <div className="theme-card p-4 rounded-lg shadow-md h-full">
                   <h2 className="text-xl font-semibold mb-2 text-center">
                     Your Location
@@ -430,17 +430,14 @@ export default function Weather() {
                     />
                   </div>
                 </div>
-              </div>
-            )}
-            {!showMap && weather && (
-              <div className="w-full lg:w-1/2">
+              ) : (
                 <div className="theme-card p-4 rounded-lg shadow-md h-full flex items-center justify-center">
                   <h2 className="text-xl font-semibold text-center">
                     Click "Show Location Map" to view your location
                   </h2>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         )}
 
