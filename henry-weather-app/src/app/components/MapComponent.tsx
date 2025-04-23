@@ -36,13 +36,7 @@ const MapComponent: React.FC<MapComponentProps> = ({ latitude, longitude }) => {
         keyboard: false, // Disable keyboard navigation
       });
 
-      // Remove zoom controls
-      map.current.addControl(
-        new mapboxgl.NavigationControl({
-          showCompass: false,
-          showZoom: false,
-        })
-      );
+      // Remove Navigation Controls section since we've disabled all interactions
     }
   }, [latitude, longitude, MAPBOX_TOKEN]);
 
@@ -69,8 +63,8 @@ const MapComponent: React.FC<MapComponentProps> = ({ latitude, longitude }) => {
     return (
       <div className="flex items-center justify-center h-full bg-gray-100 rounded-lg p-4">
         <p className="text-red-500">
-          Mapbox token is missing. Please set MAPBOX_ACCESS_TOKEN in your
-          environment variables.
+          Mapbox token is missing. Please set NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN in
+          your environment variables.
         </p>
       </div>
     );
