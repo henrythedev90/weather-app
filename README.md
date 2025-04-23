@@ -4,6 +4,12 @@ A modern, responsive weather application that displays real-time weather informa
 
 _Last updated: April 2025_
 
+## Screenshot
+
+![Henry's Weather App Screenshot](screenshot.png)
+
+_The app showing weather and location map for Baja Mar with 5-day forecast_
+
 ## Features
 
 - **Dynamic Weather-Based Themes**: The app's color scheme adapts to the current weather conditions (sunny, cloudy, rainy, etc.)
