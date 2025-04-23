@@ -433,7 +433,7 @@ export default function Weather() {
               ) : (
                 <div className="theme-card p-4 rounded-lg shadow-md h-full flex items-center justify-center">
                   <h2 className="text-xl font-semibold text-center">
-                    Click "Show Location Map" to view your location
+                    Click &quot;Show Location Map&quot; to view your location
                   </h2>
                 </div>
               )}
