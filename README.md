@@ -2,7 +2,7 @@
 
 A modern, responsive weather application that displays real-time weather information and forecasts with dynamic themes that change based on current weather conditions.
 
-_Last updated: June 2024_
+_Last updated: April 2025_
 
 ## Features
 
